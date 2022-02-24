@@ -7,28 +7,39 @@ namespace MyApp // Note: actual namespace depends on the project name.
     {
         static async Task Main(string[] args)
         {
-            await GetATokenForGraph();
+            await GetATokenForGraph(bool.Parse(args[0]));
         }
 
-        static async Task GetATokenForGraph()
+        static async Task GetATokenForGraph(bool withBroker)
         {
-            string authority = "https://login.microsoftonline.com/contoso.com";
             string[] scopes = new string[] { "499b84ac-1321-427f-aa17-267ca6975798/.default" };
-            IPublicClientApplication app = PublicClientApplicationBuilder
+            var builder = PublicClientApplicationBuilder
                  .Create("872cd9fa-d31f-45e0-9eab-6e460a02d1f1")
-                 .WithTenantId("72f988bf-86f1-41af-91ab-2d7cd011db47")
-                 .Build();
-
-            // var accounts = await app.GetAccountsAsync();
-
-            AuthenticationResult result = null;
-            // if (accounts.Any())
-            // {
-            //     result = await app.AcquireTokenSilent(scopes, accounts.FirstOrDefault())
-            //         .ExecuteAsync();
-            // }
-            // else
+                 .WithTenantId("72f988bf-86f1-41af-91ab-2d7cd011db47");
+            if (withBroker)
             {
+                 builder = builder
+                    .WithWindowsBrokerOptions(new WindowsBrokerOptions(){
+                        HeaderText = "yo yo",
+                        ListWindowsWorkAndSchoolAccounts = true,
+                        MsaPassthrough = false,
+                    })
+                    .WithBroker();
+            }
+            IPublicClientApplication app = builder.Build();
+
+            var accounts = await app.GetAccountsAsync();
+
+            AuthenticationResult? result = null;
+            if (accounts.Any())
+            {
+                Console.WriteLine("trying " + accounts.First().Username);
+                result = await app.AcquireTokenSilent(scopes, accounts.First())
+                    .ExecuteAsync();
+            }
+            else
+            {
+                Console.WriteLine("no accounts found");
                 try
                 {
                     result = await app.AcquireTokenByIntegratedWindowsAuth(scopes)
@@ -84,7 +95,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
                 }
             }
 
-            Console.WriteLine(result.Account.Username);
+            Console.WriteLine(result?.Account.Username);
         }
     }
 }
