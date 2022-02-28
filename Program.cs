@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Identity.Client;
 
 namespace MyApp // Note: actual namespace depends on the project name.
@@ -30,7 +33,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
             var accounts = await app.GetAccountsAsync();
 
-            AuthenticationResult? result = null;
+            AuthenticationResult result = null;
             if (accounts.Any())
             {
                 Console.WriteLine("trying " + accounts.First().Username);
