@@ -18,6 +18,13 @@ namespace MyApp // Note: actual namespace depends on the project name.
             string[] scopes = new string[] { "499b84ac-1321-427f-aa17-267ca6975798/.default" }; // AzDO
             var builder = PublicClientApplicationBuilder
                  .Create("872cd9fa-d31f-45e0-9eab-6e460a02d1f1") // AzDO client
+                 .WithLogging(
+                     (LogLevel level, string message, bool containsPii) => {
+                         Console.WriteLine($"MSAL {level} {message}");
+                     },
+                     LogLevel.Verbose,
+                     true
+                 )
                  .WithTenantId("72f988bf-86f1-41af-91ab-2d7cd011db47"); // @microsoft.com
             if (withBroker)
             {

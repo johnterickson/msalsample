@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "msaldemo": {
+      "commandName": "Project",
+      "commandLineArgs": "false",
+      "nativeDebugging": true
+    }
+  }
+}
