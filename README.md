@@ -1,5 +1,10 @@
-Two parameters: withBroker, withIWA
-Three configs: net48;netcoreapp3.1;net6
+* Two parameters: 
+  * withBroker
+  * withIWA
+* Three configs
+  * net48
+  * netcoreapp3.1
+  * net6
 
 Tests on AADJ windows:
 ```
